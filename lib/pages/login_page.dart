@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:apollodemo1/components/sign_btn.dart';
 import 'package:apollodemo1/components/squaretile.dart';
 import 'package:apollodemo1/services/auth_service.dart';
@@ -11,21 +9,22 @@ import '../components/textfield.dart';
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
 
-  const LoginPage({super.key, required this.onTap});
+  const LoginPage({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //text editing controllers
+  // Text editing controllers
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
+  
 
-  // sign in method
+
+  // Sign in method
   void signUserIn() async {
-    // loading circle
+    // Show loading indicator
     showDialog(
       context: context,
       builder: (context) {
@@ -34,18 +33,17 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
-    //try sign in
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
+        email: emailController.text,
+        password: passwordController.text,
+      );
 
-      //pop the navigator
+      // Pop the loading dialog
       Navigator.pop(context);
-
-      //wrong email pop up
     } on FirebaseAuthException catch (e) {
-      //Wrong email
-      //pop the navigator
+      // Pop the loading dialog
       Navigator.pop(context);
       showErrorMessage(e.code);
     }
@@ -71,69 +69,75 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[300],
-        body: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 50),
-                  //logo
-                  Icon(
-                    Icons.lock,
-                    size: 100,
+      backgroundColor: Colors.grey[300],
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 10),
+                // Logo
+                Icon(
+                  Icons.lock,
+                  size: 100,
+                ),
+
+                
+
+                // Welcome back message
+                Text(
+                  "Welcome back, you've been missed!",
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 16,
                   ),
-                  //welcomec back,you've been missed !
-                  Text(
-                    "Welcome back you've been missed !",
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 16,
-                    ),
+                ),
+                SizedBox(height: 25),
+                // Email text field
+                Textfield(
+                  controller: emailController,
+                  hintText: 'Email',
+                  obscureText: false,
+                ),
+                const SizedBox(height: 10),
+                // Password text field
+                Textfield(
+                  controller: passwordController,
+                  hintText: 'Password',
+                  obscureText: true,
+                ),
+                SizedBox(height: 10),
+
+                 Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 25),
-                  //email text field
-                  Textfield(
-                    controller: emailController,
-                    hintText: 'Email',
-                    obscureText: false,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  //password text field
-                  Textfield(
-                    controller: passwordController,
-                    hintText: 'Password',
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 10),
-                  //forgot password?
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Forgot Password?',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                  Lg_btn(
-                    text: 'Sign In',
-                    onTap: signUserIn,
-                  ),
-                  const SizedBox(height: 50.0),
-                  //or countinue with
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(children: [
+                ),
+                
+                const SizedBox(height: 10),
+               
+                const SizedBox(
+                  height: 25.0,
+                ),
+                // Sign In button
+                Lg_btn(
+                  text: 'Sign In',
+                  onTap: signUserIn,
+                ),
+                const SizedBox(height: 50.0),
+                // Or continue with
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    children: [
                       Expanded(
                         child: Divider(
                           thickness: 0.5,
@@ -153,51 +157,53 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.grey[400],
                         ),
                       ),
-                    ]),
-                  ),
-                  const SizedBox(
-                    height: 50.0,
-                  ),
-                  //google + apple sign in buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //google sign in btn
-                      SqTile(
-                          onTap: () => AuthService().signInWithGoogle(),
-                          imagePath: "assets/google.png"),
-                      SizedBox(width: 25),
-                      //apple sign in button
-                      SqTile(onTap: () => {}, imagePath: "assets/apple.png")
                     ],
                   ),
-                  const SizedBox(
-                    height: 50.0,
-                  ),
-
-                  //not a member ? register now
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Not a member',
-                        style: TextStyle(color: Colors.grey[700]),
+                ),
+                const SizedBox(
+                  height: 50.0,
+                ),
+                // Google and Apple sign in buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Google sign in btn
+                    SqTile(
+                      onTap: () => AuthService().signInWithGoogle(),
+                      imagePath: "assets/google.png",
+                    ),
+                    SizedBox(width: 25),
+                    // Apple sign in button
+                    SqTile(onTap: () => {}, imagePath: "assets/apple.png"),
+                  ],
+                ),
+                const SizedBox(
+                  height: 50.0,
+                ),
+                // Not a member? Register now
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Not a member',
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    const SizedBox(width: 4),
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: Text(
+                        'Register now',
+                        style: TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(width: 4),
-                      GestureDetector(
-                        onTap: widget.onTap,
-                        child: Text(
-                          'Register now',
-                          style: TextStyle(
-                              color: Colors.blue, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
