@@ -1,4 +1,4 @@
-import 'package:apollodemo1/home_screen/home_screen.dart';
+
 import 'package:apollodemo1/pages/auth_page.dart';
 import 'package:apollodemo1/pages/splash_screen.dart';
 import 'package:flutter/foundation.dart';

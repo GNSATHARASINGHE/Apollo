@@ -26,9 +26,9 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Future<List<Map<String, dynamic>>> fetchPlaylistsFromApi(String genre) async {
-    final String clientId = '5d01e47fab0844c9b7f5c7ed4cf12718';
-    final String clientSecret = '34fa810e6c054630939ea51cd226d2ec';
-    final String authUrl = 'https://accounts.spotify.com/api/token';
+    const String clientId = '5d01e47fab0844c9b7f5c7ed4cf12718';
+    const String clientSecret = '34fa810e6c054630939ea51cd226d2ec';
+    const String authUrl = 'https://accounts.spotify.com/api/token';
 
     final authResponse = await http.post(
       Uri.parse(authUrl),
@@ -237,6 +237,7 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
+ 
   AppBar getAppBar() {
     return AppBar(
       backgroundColor: Colors.black,

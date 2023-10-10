@@ -102,17 +102,17 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-void takePhoto(ImageSource source) async {
-  final pickedFile = await _picker.pickImage(
-    source: source,
-  );
+  void takePhoto(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(
+      source: source,
+    );
 
-  if (pickedFile != null) {
-    setState(() {
-      imageFile = PickedFile(pickedFile.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = pickedFile as PickedFile?;
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -126,25 +126,27 @@ void takePhoto(ImageSource source) async {
               children: [
                 SizedBox(height: 25),
                 // Profile Image Placeholder
-               Stack(
-  alignment: Alignment.bottomRight,
-  children: [
-    CircleAvatar(
-      radius: 80.0,
-      backgroundImage: imageFile == null
-        ? const AssetImage("assets/me1.jpg")
-        : FileImage(File(imageFile!.path)) as ImageProvider<Object>,
-    ),
-    IconButton(
-      onPressed: _showImageSourceDialog,
-      icon: Icon(
-        Icons.camera_alt,
-        color: Colors.teal,
-        size: 28.0,
-      ),
-    ),
-  ],
-),
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    CircleAvatar(
+                      radius: 80.0,
+                      backgroundImage: imageFile == null
+                     ? AssetImage("assets/me1.jpg")
+                     : FileImage(File(imageFile!.path)) as ImageProvider<Object>?,
+
+                     
+                    ),
+                    IconButton(
+                      onPressed: _showImageSourceDialog,
+                      icon: Icon(
+                        Icons.camera_alt,
+                        color: Colors.teal,
+                        size: 28.0,
+                      ),
+                    ),
+                  ],
+                ),
                 SizedBox(height: 10),
                 Row(
                   children: <Widget>[

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../auth/login_screen.dart';
 import 'auth_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 5)).then((value) {
       Navigator.of(context)
-          .pushReplacement(CupertinoPageRoute(builder: (ctx) => AuthPage()));
+          .pushReplacement(CupertinoPageRoute(builder: (ctx) => const LoginScreen()));
     });
   }
 

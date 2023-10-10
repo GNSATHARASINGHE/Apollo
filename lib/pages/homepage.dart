@@ -1,4 +1,4 @@
-import 'package:apollodemo1/home_screen/home_screen.dart';
+import 'package:apollodemo1/home_screen/home_page.dart';
 import 'package:apollodemo1/json/spotify.dart';
 import 'package:apollodemo1/model/song_data_model.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
   void _navigateToHomeScreen() {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => HomeScreen(),
+        builder: (context) => Homepage(),
       ),
     );
   }
