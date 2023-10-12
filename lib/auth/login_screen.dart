@@ -1,5 +1,6 @@
 
 import 'package:apollodemo1/auth/registration_screen%20(2).dart';
+import 'package:apollodemo1/auth/user_profile/reset_passsword.dart';
 import 'package:apollodemo1/home_screen/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -167,6 +168,24 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
     );
 
+    Widget forgetPassword(BuildContext context) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 35,
+        alignment: Alignment.bottomRight,
+        child: TextButton(
+          child: const Text(
+            "Forget Password ?",
+            style: TextStyle(color: Colors.orange),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ResetPassScreen()));
+          },
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -198,8 +217,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     passwordField,
                     const SizedBox(
-                      height: 40,
+                      height: 10,
                     ),
+                    forgetPassword(context),
                     loginButton,
                     const SizedBox(
                       height: 15,

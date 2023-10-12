@@ -1,3 +1,5 @@
+import 'package:apollodemo1/pages/homepage.dart';
+import 'package:apollodemo1/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../utils/user_preferences.dart';
@@ -19,7 +21,9 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onClicked,
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+      },
       child: CircleAvatar(
         radius: 50,
         backgroundImage: NetworkImage(imagePath), // You can use NetworkImage or AssetImage depending on your image source
