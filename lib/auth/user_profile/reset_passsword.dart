@@ -47,7 +47,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
 
     final resetBtn = Material(
       elevation: 5,
-      color: Colors.orange,
+      color: Color.fromARGB(255, 19, 3, 5),
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),

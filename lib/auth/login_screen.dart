@@ -1,7 +1,9 @@
 
+
 import 'package:apollodemo1/auth/registration_screen%20(2).dart';
 import 'package:apollodemo1/auth/user_profile/reset_passsword.dart';
 import 'package:apollodemo1/home_screen/home_page.dart';
+import 'package:apollodemo1/home_screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -42,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Fluttertoast.showToast(msg: "Login Successful");
 
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const Homepage()),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
       } else {
         Fluttertoast.showToast(
