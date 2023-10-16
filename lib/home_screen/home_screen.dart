@@ -1,3 +1,4 @@
+import 'package:apollodemo1/auth/user_profile.dart';
 import 'package:apollodemo1/auth/user_profile/profile_page.dart';
 import 'package:apollodemo1/home_screen/search_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return IndexedStack(
       index: activeTab,
       children: [
-        Homepage(),
+        HomeScreen(),
        // UserPlaylistsPage(), user playlist
 
  Center(
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         SearchPage(),
-        ProfileWidget(imagePath: imagePath, onClicked: onClicked)
+        
        
       ],
     );
