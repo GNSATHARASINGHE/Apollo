@@ -1,23 +1,77 @@
-
-import 'package:apollodemo1/auth/update_profile.dart';
-import 'package:apollodemo1/home_screen/home_page.dart';
+import 'package:apollodemo1/auth/user_profile/freeplan.dart';
+import 'package:apollodemo1/home_screen/home_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:apollodemo1/auth/update_profile.dart';
+import 'package:apollodemo1/auth/user_profile/account.dart';
+import 'package:apollodemo1/home_screen/home_page.dart';
 import 'auth_helper (1).dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-
-
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool  _isLoading=true;
+  String? profileImage;
+String? uName;
+String? eMail;
+
+
+@override
+void initState(){
+   getProfilePhoto();
+  super.initState();
+}
+
+void getProfilePhoto() async {
+  setState(() {
+     _isLoading=true;
+  });
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+  final db = FirebaseFirestore.instance;
+
+    if (user != null) {
+    DocumentSnapshot documentSnapshot=await db.collection('users').doc(user.uid).get();
+     Map<String, dynamic> userData = documentSnapshot.data() as Map<String, dynamic>;
+   profileImage = userData['profileImage'];
+   eMail=userData['emailAddress'];
+   uName=userData['firstName'];
+  setState(() {
+
+      _isLoading=false;
+  });
+     print(profileImage);
+    } else {
+      setState(() {
+         _isLoading=false;
+      });
+      print("User not signed in");
+    }
+  } catch (e) {
+    setState(() {
+       _isLoading=false;
+    });
+    print("Error getting user information: $e");
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 0, 0, 0),
       appBar: AppBar(
+        backgroundColor: Colors.black,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Homepage()),
+              MaterialPageRoute(builder: (context) => HomeScreen()),
             );
           },
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -33,35 +87,39 @@ class ProfileScreen extends StatelessWidget {
               onPressed: () {},
               icon: const Icon(
                 Icons.star_border_purple500_outlined,
-                color: (Colors.black),
+                color: (Colors.white),
               ))
         ],
       ),
       body: SingleChildScrollView(
         child: Center(
-          child: Container(
+          child: _isLoading?CircularProgressIndicator():Container(
             child: Column(
               children: [
                 const SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
-                SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.asset("assets/images/pro_pic.png"),
+                CircleAvatar(
+                  radius: 80.0,
+                  child: ClipOval(
+                    child: FadeInImage(
+                      width: 200,
+                      placeholder: AssetImage('assets/me1.jpg'),
+                      image: NetworkImage(
+                          profileImage??'https://picsum.photos/200'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  "UserName",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
+                 Text(
+                  uName??"",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
-                const Text(
-                  "email",
+                 Text(
+                  eMail??"",
                   style: TextStyle(fontSize: 19),
                 ),
                 const SizedBox(
@@ -71,20 +129,20 @@ class ProfileScreen extends StatelessWidget {
                   width: 180,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => UpdateProfile()),
-                      );
+                        Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyWidget()),
+            );
                     },
-                    child: const Text("Edit Profile"),
+                    child: const Text("Go Premium"),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
+                        backgroundColor: Colors.orange,
                         side: BorderSide.none,
                         shape: const StadiumBorder()),
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
 
                 const SizedBox(
@@ -93,31 +151,30 @@ class ProfileScreen extends StatelessWidget {
 
                 ///Menu
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
                       const Divider(),
                       proMod(
-                        title: "Settings",
+                        title: "Account",
                         icon: Icons.settings,
-                        onPress: () {},
+                        onPress: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => AccountPage()),
+                          );
+                        },
                       ),
                       const SizedBox(
                         height: 10,
                       ),
+                     
                       proMod(
-                        title: "Billing Details",
-                        icon: Icons.wallet,
-                        onPress: () {},
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      proMod(
-                          title: "User Management",
+                          title: "Notification",
                           icon: Icons.person_outline_outlined,
-                          onPress: () {}),
+                          onPress: () {
+                            Navigator.of(context).pop();
+                          }),
                       const SizedBox(
                         height: 10,
                       ),
@@ -126,23 +183,32 @@ class ProfileScreen extends StatelessWidget {
                         height: 10,
                       ),
                       proMod(
-                          title: "Information",
+                          title: "Advertisement",
                           icon: Icons.info_outline,
                           onPress: () {}),
                       const SizedBox(
                         height: 10,
                       ),
                       proMod(
+                          title: "About",
+                          icon: Icons.info_outline,
+                         onPress: () {
+                          
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      proMod(
                           title: "LogOut",
                           icon: Icons.logout,
-                          textColor: Colors.red,
+                          textColor: Colors.orange,
                           endIcon: false,
                           onPress: () {
                             AuthHelper.instance.logout(context);
                           }),
                     ],
                   ),
-                  // child: proMod(),
                 )
               ],
             ),
@@ -159,7 +225,7 @@ class proMod extends StatelessWidget {
     required this.icon,
     required this.onPress,
     this.endIcon = true,
-    this.textColor,
+    this.textColor = Colors.white,
     super.key,
   });
 
@@ -182,12 +248,12 @@ class proMod extends StatelessWidget {
         ),
         child: Icon(
           icon,
-          // size: 40,
-          color: Colors.redAccent,
+          color: Colors.orange,
         ),
       ),
       title: Text(
         title,
+        style: TextStyle(color: textColor),
       ),
       trailing: endIcon
           ? Container(
@@ -195,12 +261,12 @@ class proMod extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                color: Colors.grey.withOpacity(0.05),
+                color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
               ),
               child: const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 20,
-                //color: Colors.blue,
+                color: Colors.white,
               ),
             )
           : null,

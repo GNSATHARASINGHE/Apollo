@@ -4,6 +4,7 @@ class UserModel {
   String? confirmPassword;
   String? firstName;
   String? lastName;
+  String? profileImage;
 
   UserModel({
     this.emailAddress,
@@ -11,6 +12,7 @@ class UserModel {
     this.confirmPassword,
     this.firstName,
     this.lastName,
+    this.profileImage
   });
 
   // Factory method to create a UserModel object from a map
@@ -21,6 +23,7 @@ class UserModel {
       confirmPassword: map['confirmPassword'],
       firstName: map['firstName'],
       lastName: map['lastName'],
+      profileImage: map['profileImage']
     );
   }
 
@@ -32,6 +35,7 @@ class UserModel {
       'confirmPassword': confirmPassword,
       'firstName': firstName,
       'lastName': lastName,
+      'profileImage':profileImage
     };
   }
 }

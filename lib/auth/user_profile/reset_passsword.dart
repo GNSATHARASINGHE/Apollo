@@ -36,18 +36,27 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
       },
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.mail),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        prefixIcon:const Icon(Icons.mail),
+        contentPadding:const EdgeInsets.fromLTRB(20, 15, 20, 15),
         labelText: "Email",
+         hintStyle: TextStyle(color: Colors.white),
+        labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
+          enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Color.fromARGB(255, 255, 255, 255), // Change border color to white
       ),
+      borderRadius: BorderRadius.circular(10),
+      ),
+    ),
     );
+    
 
     final resetBtn = Material(
       elevation: 5,
-      color: Color.fromARGB(255, 19, 3, 5),
+      color: Color.fromRGBO(246, 242, 243, 1),
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -72,7 +81,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 20,
-            color: Colors.white,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -80,20 +89,20 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
           'Forget Password',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Color.fromARGB(255, 248, 246, 246)),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: Color.fromRGBO(10, 10, 0, 1),
       ),
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Container(
-              color: Colors.white,
+              color: Colors.black,
               child: Padding(
                 padding: const EdgeInsets.all(30.0),
                 child: Form(
@@ -108,11 +117,21 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
                       SizedBox(
                         height: 200,
                         child: Image.asset(
-                          "assets/images/cafe_logo.png",
-                          width: 180,
-                          fit: BoxFit.contain,
+                          "assets/unlock.png",
+                          width: 90,
+                          fit: BoxFit.contain,//
                         ),
                       ),
+                       Text(
+                  "Please enter your email",
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 16,
+                    
+                  ),
+                  
+                ),
+                
                       const SizedBox(
                         height: 65,
                       ),

@@ -1,5 +1,5 @@
 import 'package:apollodemo1/auth/user_profile.dart';
-import 'package:apollodemo1/auth/user_profile/profile_page.dart';
+
 import 'package:apollodemo1/home_screen/search_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return IndexedStack(
       index: activeTab,
       children: [
-        HomeScreen(),
+        Homepage(),
        // UserPlaylistsPage(), user playlist
 
- Center(
+ 
+        SearchPage(),
+        Center(
           child: Text(
             "Settings",
             style: TextStyle(
@@ -43,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        SearchPage(),
+      ProfileScreen(),
+          
         
        
       ],

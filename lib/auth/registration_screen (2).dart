@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:apollodemo1/auth/model/user_model.dart';
 import 'package:apollodemo1/home_screen/home_page.dart';
 import 'package:apollodemo1/home_screen/home_screen.dart';
@@ -5,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'login_screen.dart';
 
 
@@ -16,28 +19,39 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  
   // form key
   final _formKey = GlobalKey<FormState>();
 
   //firebase
   final _auth = FirebaseAuth.instance;
+ final _storageRef = FirebaseStorage.instance.ref();
 
   bool _isLoading = false; // Track loading state
 
   //editting controllers
+  
+  
   final userNameController = TextEditingController();
   final lastNameController = TextEditingController();
-   final emailAddressController = TextEditingController();
+  final emailAddressController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+  final ImagePicker _picker = ImagePicker();
+  String downloadURL='';
+ File? profileImage;
+
   
-
-  bool _isPasswordVisible = false; // Track password visibility
-  bool _isConfirmPasswordVisible = false; // Track confirm password visibility
-
   
   @override
+
+  
   Widget build(BuildContext context) {
+
+    
+
     //First Name Field
  
     final userNameField = TextFormField(
@@ -57,15 +71,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       onSaved: (value) {
         userNameController.text = value!;
       },
+    
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.account_circle),
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "First Name",
+         hintStyle: TextStyle(color: Colors.white),
+        labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+      borderSide: BorderSide(
+        color: Colors.white, // Change border color to white
       ),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.white, // Change border color to white
+      ),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    ), style: TextStyle(color: Colors.white),
     );
     
  //Last Name Field
@@ -91,11 +117,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
        
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Last Name",
+         hintStyle: TextStyle(color: Colors.white),
+        labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
         ),
+        enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Color.fromARGB(255, 255, 255, 255), // Change border color to red
       ),
-    );
+      borderRadius: BorderRadius.circular(10),
+      ),
+    ),
+     style: TextStyle(color: Colors.white),
+  );
 
 
     //Email field
@@ -121,10 +156,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         prefixIcon: const Icon(Icons.mail),
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
+         hintStyle: TextStyle(color: Colors.white),
+        labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
         ),
+        enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Color.fromARGB(255, 255, 255, 255), // Change border color to white
       ),
+      borderRadius: BorderRadius.circular(10),
+      ),
+    ),
+     style: TextStyle(color: Colors.white),
     );
 
     
@@ -158,11 +202,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             prefixIcon: const Icon(Icons.lock),
             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Password",
+             hintStyle: TextStyle(color: Colors.white),
+             labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
+            enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+            color: Color.fromARGB(255, 255, 255, 255), // Change border color to red
+      ),
+      borderRadius: BorderRadius.circular(10),
           ),
+           focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.blue, // Change border color to blue when focused
+      ),
+      borderRadius: BorderRadius.circular(10),
+    ),
+          ), style: TextStyle(color: Colors.white),
         ),
+        
+        
+        
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
@@ -202,11 +263,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             prefixIcon: const Icon(Icons.lock),
             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Confirm Password",
+             hintStyle: TextStyle(color: Colors.white),
+        labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
+             enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+            color: Color.fromARGB(255, 255, 255, 255), // Change border color to red
+      ),
+      borderRadius: BorderRadius.circular(10),
           ),
+           focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.blue, // Change border color to blue when focused
+      ),
+      borderRadius: BorderRadius.circular(10),
+    ),
+          ), style: TextStyle(color: Colors.white),
         ),
+        
+        
+        
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
@@ -230,7 +308,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     ///signup button
     final signUpButton = Material(
       elevation: 5,
-      color: Color.fromARGB(255, 13, 1, 1),
+      color: Color.fromRGBO(252, 250, 250, 1),
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
         padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -242,19 +320,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           "SignUp",
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+              fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           Center(
             child: SingleChildScrollView(
               child: Container(
-                color: Colors.white,
+                color: Colors.black,
                 child: Padding(
                   padding: const EdgeInsets.all(30.0),
                   child: Form(
@@ -263,20 +341,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(
-                          height: 150,
-                          child: CircleAvatar(
-                          radius: 70, // Adjust the radius as needed
-                          backgroundColor: Color.fromARGB(255, 8, 0, 0), // Background color of the circle
-                          child: ClipOval(
-                          child: Image.asset(
-                          "assets/me1.jpg",
-                          width: 130,
-                          fit: BoxFit.cover, // Use 'cover' for a circular image
-                        ),
-                      ),
-                    ),
-                  ),
+                       
+                  // Image Profile Widget
+                        imageProfile(),
+                   
                          Text(
                   "Let's create an account for you!",
                   style: TextStyle(
@@ -315,6 +383,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         const SizedBox(
                           height: 15,
                         ),
+
+
+                        
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -333,7 +404,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
-                                    color: Colors.redAccent),
+                                    color: Color.fromARGB(255, 255, 166, 82)),
                               ),
                             )
                           ],
@@ -356,7 +427,70 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
+Widget imageProfile() {
+    return Stack(
+      children: <Widget>[
+        CircleAvatar(
+          radius: 80.0,
+          child:ClipOval(
+                    child:profileImage!=null?Image.file(profileImage!,
+                    width: 200,height: 200,
+                    fit: BoxFit.cover,):Image.asset('assets/me1.jpg')),
+        
+       
+        ),
+        Positioned(
+          bottom: 20.0,
+          right: 20.0,
+          child: IconButton(
+            icon: Icon(
+              Icons.camera_alt,
+              color: Colors.teal,
+              size: 28.0,
+            ),
+            onPressed: () {
+              _openImagePicker();
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
+  void _openImagePicker() async {
+    final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedImage != null) {
+        print(pickedImage.path);
+        profileImage=File(pickedImage.path);
+       _uploadImage(File(pickedImage.path));
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future<void> _uploadImage(File file) async {
+    setState(() {
+      _isLoading=true;
+    });
+  try {
+    String fileName = file.path.split('/').last;
+    Reference dataRef=_storageRef.child('profilePictures/$fileName');
+    await dataRef.putFile(file);
+   downloadURL = await dataRef.getDownloadURL();
+    print('Image uploaded. Download URL: $downloadURL');
+     setState(() {
+      _isLoading=false;
+    });
+  } catch (e) {
+    setState(() {
+      _isLoading=false;
+    });
+    print('Error uploading image: $e');
+  }
+}
+  
   void signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -389,9 +523,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   postDetailToFirestore() async {
-    //calling firebase
-    //calling user model
-    // sending these values
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
@@ -404,6 +535,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     userModel.lastName = lastNameController.text;
     userModel.confirmPassword = confirmPasswordController.text;
     userModel.password = passwordController.text;
+    userModel.profileImage=downloadURL;
+  
 
     //creating new collection in firestore
     await firebaseFirestore

@@ -1,15 +1,20 @@
 
 
+import 'package:apollodemo1/auth/model/user_model.dart';
 import 'package:apollodemo1/auth/registration_screen%20(2).dart';
 import 'package:apollodemo1/auth/user_profile/reset_passsword.dart';
 import 'package:apollodemo1/home_screen/home_page.dart';
 import 'package:apollodemo1/home_screen/home_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 
 
+import '../components/squaretile.dart';
+import '../services/auth_service.dart';
 import 'auth_helper (1).dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,7 +27,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _isPasswordVisible = false; // Track password visibility
-
+final GoogleSignIn googleSignIn = GoogleSignIn();
+final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -57,6 +63,61 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+    Future<void> _handleGoogleSignIn() async {
+      setState(() {
+        _isLoading=true;
+      });
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      UserCredential userData= await _auth.signInWithCredential(credential);
+      print("!!!!!!!!!!!!!!!!");
+      postDetailToFirestore(userData);
+    } catch (error) {
+      setState(() {
+        _isLoading=false;
+      });
+      print(error);
+    }
+  }
+
+  postDetailToFirestore(UserCredential userData) async {
+
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    UserModel userModel = UserModel();
+try{
+    //writting all the values
+    userModel.emailAddress = userData.user!.email;
+    userModel.firstName =userData.user!.displayName;
+    userModel.lastName =userData.user!.displayName;
+    // userModel.confirmPassword = confirmPasswordController.text;
+    // userModel.password = passwordController.text;
+    userModel.profileImage=userData.user!.photoURL;
+  
+
+    //creating new collection in firestore
+    await firebaseFirestore
+        .collection("users")
+        .doc(userData.user!.uid)
+        .set(userModel.toMap());
+    Fluttertoast.showToast(msg: "Account Created Successfully !");} catch(e){print(e);}
+
+    Navigator.pushAndRemoveUntil(
+        (context),
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+        (route) => false);
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     final emailField = TextFormField(
@@ -75,14 +136,29 @@ class _LoginScreenState extends State<LoginScreen> {
       onSaved: (value) {
         emailController.text = value!;
       },
+      style: TextStyle(color: Colors.white),
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.mail),
+        prefixIcon: const Icon(Icons.mail,color: Colors.white,),
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        hintStyle: TextStyle(color: Colors.white),
+        labelStyle: TextStyle(color: Colors.white),
+        border: OutlineInputBorder(      
+      borderRadius: BorderRadius.circular(10),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Color.fromARGB(255, 255, 255, 255), // Change border color to blue
+      ),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: const Color.fromARGB(255, 255, 238, 0), // Change border color to blue when focused
+      ),
+      borderRadius: BorderRadius.circular(10),
+    ),
       ),
     );
 
@@ -105,14 +181,28 @@ class _LoginScreenState extends State<LoginScreen> {
           onSaved: (value) {
             passwordController.text = value!;
           },
+          style: TextStyle(color: Colors.white),
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.lock),
+            prefixIcon: const Icon(Icons.lock,color: Colors.white,),
             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Password",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            hintStyle: TextStyle(color: Colors.white),
+            border: OutlineInputBorder(      
+      borderRadius: BorderRadius.circular(10),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: const Color.fromARGB(255, 255, 255, 255), // Change border color to red
+      ),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: const Color.fromARGB(255, 233, 243, 33), // Change border color to blue when focused
+      ),
+      borderRadius: BorderRadius.circular(10),
+    ),
           ),
         ),
         Align(
@@ -122,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _isPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off, // Toggle password visibility
-              color: Colors.grey,
+              color: const Color.fromARGB(255, 255, 255, 255),
             ),
             onPressed: () {
               setState(() {
@@ -138,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Material(
           elevation: 5,
-          color: Color.fromARGB(255, 14, 1, 1),
+          color: Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(30),
           child: MaterialButton(
             padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -151,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
-                color: Colors.white,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -178,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: TextButton(
           child: const Text(
             "Forget Password ?",
-            style: TextStyle(color: Colors.orange),
+            style: TextStyle(color: Color.fromARGB(255, 249, 245, 12)),
           ),
           onPressed: () {
             Navigator.push(context,
@@ -189,11 +279,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            color: Colors.white,
+            color: Color.fromARGB(255, 0, 0, 0),
             child: Padding(
               padding: const EdgeInsets.all(30.0),
               child: Form(
@@ -208,6 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         "assets/logo.png",
                         width: 250,
                         fit: BoxFit.contain,
+                        
                       ),
                     ),
                     const SizedBox(
@@ -229,7 +320,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text("Don't have an account? "),
+                        const Text("Don't have an account? ",style: TextStyle(color: Colors.white ),),
+                        
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -244,15 +336,29 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
-                              color: Color.fromARGB(255, 11, 0, 0),
+                              color: Color.fromARGB(255, 255, 255, 255),
                             ),
                           ),
 
                           
                         )
-                        
+                    
                       ],
-                    )
+                    ),
+                  SizedBox(height: 35.0,),
+                     Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Google sign in btn
+                    SqTile(
+                      onTap: () => _handleGoogleSignIn(),
+                      imagePath: "assets/google.png",
+                    ),
+                    SizedBox(width: 25),
+                    // Apple sign in button
+                    SqTile(onTap: () => {}, imagePath: "assets/apple.png"),
+                  ],
+                ),
                   ],
                   
                 ),
