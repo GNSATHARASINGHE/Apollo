@@ -10,7 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'login_screen.dart';
 
-
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
@@ -19,19 +18,17 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  
   // form key
   final _formKey = GlobalKey<FormState>();
 
   //firebase
   final _auth = FirebaseAuth.instance;
- final _storageRef = FirebaseStorage.instance.ref();
+  final _storageRef = FirebaseStorage.instance.ref();
 
   bool _isLoading = false; // Track loading state
 
   //editting controllers
-  
-  
+
   final userNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailAddressController = TextEditingController();
@@ -40,20 +37,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   final ImagePicker _picker = ImagePicker();
-  String downloadURL='';
- File? profileImage;
+  String downloadURL = '';
+  File? profileImage;
 
-  
-  
   @override
-
-  
   Widget build(BuildContext context) {
-
-    
-
     //First Name Field
- 
+
     final userNameField = TextFormField(
       autofocus: false,
       controller: userNameController,
@@ -71,36 +61,36 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       onSaved: (value) {
         userNameController.text = value!;
       },
-    
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.account_circle),
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "First Name",
-         hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(color: Colors.white),
         labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.white, // Change border color to white
+          borderSide: BorderSide(
+            color: Colors.white, // Change border color to white
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white, // Change border color to white
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.white, // Change border color to white
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    ), style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.white),
     );
-    
- //Last Name Field
-  final residentialAddressField = TextFormField(
+
+    //Last Name Field
+    final residentialAddressField = TextFormField(
       autofocus: false,
       controller: lastNameController,
       keyboardType: TextInputType.streetAddress,
       validator: (value) {
-        RegExp regex = RegExp(r'^.{5,}$'); //entering minimum value 
+        RegExp regex = RegExp(r'^.{5,}$'); //entering minimum value
         if (value!.isEmpty) {
           return ("Last NameIs Required");
         }
@@ -114,24 +104,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-       
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Last Name",
-         hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(color: Colors.white),
         labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
         ),
         enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color.fromARGB(255, 255, 255, 255), // Change border color to red
+          borderSide: BorderSide(
+            color: Color.fromARGB(
+                255, 255, 255, 255), // Change border color to red
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
-      borderRadius: BorderRadius.circular(10),
-      ),
-    ),
-     style: TextStyle(color: Colors.white),
-  );
-
+      style: TextStyle(color: Colors.white),
+    );
 
     //Email field
     final emailField = TextFormField(
@@ -156,26 +145,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         prefixIcon: const Icon(Icons.mail),
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
-         hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(color: Colors.white),
         labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
         ),
         enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color.fromARGB(255, 255, 255, 255), // Change border color to white
+          borderSide: BorderSide(
+            color: Color.fromARGB(
+                255, 255, 255, 255), // Change border color to white
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
-      borderRadius: BorderRadius.circular(10),
-      ),
-    ),
-     style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.white),
     );
-
-    
-    
-  
-
-   
 
     //Password field
     final passwordField = Stack(
@@ -202,28 +186,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             prefixIcon: const Icon(Icons.lock),
             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Password",
-             hintStyle: TextStyle(color: Colors.white),
-             labelStyle: TextStyle(color: Colors.white),
+            hintStyle: TextStyle(color: Colors.white),
+            labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-            color: Color.fromARGB(255, 255, 255, 255), // Change border color to red
-      ),
-      borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Color.fromARGB(
+                    255, 255, 255, 255), // Change border color to red
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.blue, // Change border color to blue when focused
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-           focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.blue, // Change border color to blue when focused
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-          ), style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
-        
-        
-        
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
@@ -263,28 +246,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             prefixIcon: const Icon(Icons.lock),
             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Confirm Password",
-             hintStyle: TextStyle(color: Colors.white),
-        labelStyle: TextStyle(color: Colors.white),
+            hintStyle: TextStyle(color: Colors.white),
+            labelStyle: TextStyle(color: Colors.white),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-             enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-            color: Color.fromARGB(255, 255, 255, 255), // Change border color to red
-      ),
-      borderRadius: BorderRadius.circular(10),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Color.fromARGB(
+                    255, 255, 255, 255), // Change border color to red
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.blue, // Change border color to blue when focused
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-           focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.blue, // Change border color to blue when focused
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-          ), style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
-        
-        
-        
         Align(
           alignment: Alignment.centerRight,
           child: IconButton(
@@ -341,19 +323,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                       
-                  // Image Profile Widget
+                        // Image Profile Widget
                         imageProfile(),
-                   
-                         Text(
-                  "Let's create an account for you!",
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
-                    
-                  ),
-                ),
-   
+
+                        Text(
+                          "Let's create an account for you!",
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 16,
+                          ),
+                        ),
+
                         const SizedBox(
                           height: 20,
                         ),
@@ -361,13 +341,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        
-                       
+
                         residentialAddressField,
                         const SizedBox(
                           height: 20,
                         ),
-                       emailField,
+                        emailField,
                         const SizedBox(
                           height: 20,
                         ),
@@ -384,8 +363,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           height: 15,
                         ),
 
-
-                        
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -427,17 +404,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
-Widget imageProfile() {
+
+  Widget imageProfile() {
     return Stack(
       children: <Widget>[
         CircleAvatar(
           radius: 80.0,
-          child:ClipOval(
-                    child:profileImage!=null?Image.file(profileImage!,
-                    width: 200,height: 200,
-                    fit: BoxFit.cover,):Image.asset('assets/me1.jpg')),
-        
-       
+          child: ClipOval(
+              child: profileImage != null
+                  ? Image.file(
+                      profileImage!,
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset('assets/me1.jpg')),
         ),
         Positioned(
           bottom: 20.0,
@@ -462,8 +443,8 @@ Widget imageProfile() {
     setState(() {
       if (pickedImage != null) {
         print(pickedImage.path);
-        profileImage=File(pickedImage.path);
-       _uploadImage(File(pickedImage.path));
+        profileImage = File(pickedImage.path);
+        _uploadImage(File(pickedImage.path));
       } else {
         print('No image selected.');
       }
@@ -472,25 +453,25 @@ Widget imageProfile() {
 
   Future<void> _uploadImage(File file) async {
     setState(() {
-      _isLoading=true;
+      _isLoading = true;
     });
-  try {
-    String fileName = file.path.split('/').last;
-    Reference dataRef=_storageRef.child('profilePictures/$fileName');
-    await dataRef.putFile(file);
-   downloadURL = await dataRef.getDownloadURL();
-    print('Image uploaded. Download URL: $downloadURL');
-     setState(() {
-      _isLoading=false;
-    });
-  } catch (e) {
-    setState(() {
-      _isLoading=false;
-    });
-    print('Error uploading image: $e');
+    try {
+      String fileName = file.path.split('/').last;
+      Reference dataRef = _storageRef.child('profilePictures/$fileName');
+      await dataRef.putFile(file);
+      downloadURL = await dataRef.getDownloadURL();
+      print('Image uploaded. Download URL: $downloadURL');
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print('Error uploading image: $e');
+    }
   }
-}
-  
+
   void signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -523,7 +504,6 @@ Widget imageProfile() {
   }
 
   postDetailToFirestore() async {
-
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
 
@@ -535,8 +515,7 @@ Widget imageProfile() {
     userModel.lastName = lastNameController.text;
     userModel.confirmPassword = confirmPasswordController.text;
     userModel.password = passwordController.text;
-    userModel.profileImage=downloadURL;
-  
+    userModel.profileImage = downloadURL;
 
     //creating new collection in firestore
     await firebaseFirestore

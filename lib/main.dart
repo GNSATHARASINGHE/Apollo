@@ -1,4 +1,3 @@
-
 import 'package:apollodemo1/pages/auth_page.dart';
 import 'package:apollodemo1/pages/splash_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -14,8 +13,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-   const MyApp(), // Wrap your app
-    
+    const MyApp(), // Wrap your app
   );
 }
 
@@ -29,7 +27,7 @@ class MyApp extends StatelessWidget {
       // builder: DevicePreview.appBuilder,
       // theme: ThemeData.light(),
       // darkTheme: ThemeData.dark(),
-  
+
       home: /*SpotifyApp(), HomeScreen(),*/ SplashScreen(),
     );
   }

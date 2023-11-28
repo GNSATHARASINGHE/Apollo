@@ -31,9 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
       index: activeTab,
       children: [
         Homepage(),
-       // UserPlaylistsPage(), user playlist
+        // UserPlaylistsPage(), user playlist
 
- 
         SearchPage(),
         Center(
           child: Text(
@@ -45,10 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      ProfileScreen(),
-          
-        
-       
+        ProfileScreen(),
       ],
     );
   }

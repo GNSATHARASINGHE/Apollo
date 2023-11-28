@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -48,11 +53,16 @@ class _AccountPageState extends State<AccountPage> {
   void _handleSubmit() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
+      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
       if (user != null) {
         // Update user information in Firebase
         await user.updateDisplayName(nameController.text);
         await user.updateEmail(emailController.text);
+        await firebaseFirestore.collection("users").doc(user.uid).update({
+          'emailAddress': emailController.text,
+          'firstName': nameController.text
+        });
 
         // Reload the user to get the updated information
         await user.reload();
@@ -70,9 +80,9 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-         backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         title: const Text('Account Page'),
       ),
       body: Padding(
