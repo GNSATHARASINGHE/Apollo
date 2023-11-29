@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'login_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({super.key});
+  const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
@@ -21,14 +21,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   // form key
   final _formKey = GlobalKey<FormState>();
 
-  //firebase
+  // firebase
   final _auth = FirebaseAuth.instance;
   final _storageRef = FirebaseStorage.instance.ref();
 
   bool _isLoading = false; // Track loading state
 
-  //editting controllers
-
+  // editing controllers
   final userNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailAddressController = TextEditingController();
@@ -42,14 +41,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //First Name Field
-
     final userNameField = TextFormField(
       autofocus: false,
       controller: userNameController,
       keyboardType: TextInputType.name,
       validator: (value) {
-        RegExp regex = RegExp(r'^.{5,}$'); //entering minimum value 5
+        RegExp regex = RegExp(r'^.{5,}$');
         if (value!.isEmpty) {
           return ("User Name Is Required");
         }
@@ -70,13 +67,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         labelStyle: TextStyle(color: Colors.white),
         border: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.white, // Change border color to white
+            color: Colors.white,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.white, // Change border color to white
+            color: Colors.white,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -84,13 +81,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       style: TextStyle(color: Colors.white),
     );
 
-    //Last Name Field
     final residentialAddressField = TextFormField(
       autofocus: false,
       controller: lastNameController,
       keyboardType: TextInputType.streetAddress,
       validator: (value) {
-        RegExp regex = RegExp(r'^.{5,}$'); //entering minimum value
+        RegExp regex = RegExp(r'^.{5,}$');
         if (value!.isEmpty) {
           return ("Last NameIs Required");
         }
@@ -113,8 +109,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Color.fromARGB(
-                255, 255, 255, 255), // Change border color to red
+            color: Color.fromARGB(255, 255, 255, 255),
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -122,7 +117,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       style: TextStyle(color: Colors.white),
     );
 
-    //Email field
     final emailField = TextFormField(
       autofocus: false,
       controller: emailAddressController,
@@ -131,7 +125,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         if (value!.isEmpty) {
           return ("Please Enter Your Email");
         }
-        //reg exression for email validation
         if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
           return ("Please Enter valid Email");
         }
@@ -152,8 +145,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Color.fromARGB(
-                255, 255, 255, 255), // Change border color to white
+            color: Color.fromARGB(255, 255, 255, 255),
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -161,15 +153,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       style: TextStyle(color: Colors.white),
     );
 
-    //Password field
     final passwordField = Stack(
       children: [
         TextFormField(
           autofocus: false,
           controller: passwordController,
-          obscureText: !_isPasswordVisible, // Toggle password visibility
+          obscureText: !_isPasswordVisible,
           validator: (value) {
-            RegExp regex = RegExp(r'^.{6,}$'); //entering minimum value 8
+            RegExp regex = RegExp(r'^.{6,}$');
             if (value!.isEmpty) {
               return ("Password Is Required");
             }
@@ -193,14 +184,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromARGB(
-                    255, 255, 255, 255), // Change border color to red
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.blue, // Change border color to blue when focused
+                color: Colors.blue,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -212,11 +202,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           child: IconButton(
             icon: Icon(
               _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-              color: Colors.grey, // Set the eye icon's color to gray
+              color: Colors.grey,
             ),
             onPressed: () {
               setState(() {
-                _isPasswordVisible = !_isPasswordVisible; // Toggle visibility
+                _isPasswordVisible = !_isPasswordVisible;
               });
             },
           ),
@@ -224,14 +214,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ],
     );
 
-    //ConfirmPAssword field
     final confirmPasswordField = Stack(
       children: [
         TextFormField(
           autofocus: false,
           controller: confirmPasswordController,
-          obscureText:
-              !_isConfirmPasswordVisible, // Toggle confirm password visibility
+          obscureText: !_isConfirmPasswordVisible,
           validator: (value) {
             if (confirmPasswordController.text != passwordController.text) {
               return "Password Don't Match";
@@ -253,14 +241,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Color.fromARGB(
-                    255, 255, 255, 255), // Change border color to red
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.blue, // Change border color to blue when focused
+                color: Color.fromARGB(255, 33, 159, 243),
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -274,12 +261,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               _isConfirmPasswordVisible
                   ? Icons.visibility
                   : Icons.visibility_off,
-              color: Colors.grey, // Set the eye icon's color to gray
+              color: Colors.grey,
             ),
             onPressed: () {
               setState(() {
-                _isConfirmPasswordVisible =
-                    !_isConfirmPasswordVisible; // Toggle visibility
+                _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
               });
             },
           ),
@@ -287,7 +273,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ],
     );
 
-    ///signup button
     final signUpButton = Material(
       elevation: 5,
       color: Color.fromRGBO(252, 250, 250, 1),
@@ -300,6 +285,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         },
         child: const Text(
           "SignUp",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+
+    final loginButton = Material(
+      elevation: 5,
+      color: Color.fromRGBO(252, 250, 250, 1),
+      borderRadius: BorderRadius.circular(30),
+      child: MaterialButton(
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        minWidth: MediaQuery.of(context).size.width,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            ),
+          );
+        },
+        child: const Text(
+          "Login",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
@@ -323,9 +332,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        // Image Profile Widget
                         imageProfile(),
-
                         Text(
                           "Let's create an account for you!",
                           style: TextStyle(
@@ -333,7 +340,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             fontSize: 16,
                           ),
                         ),
-
                         const SizedBox(
                           height: 20,
                         ),
@@ -341,7 +347,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-
                         residentialAddressField,
                         const SizedBox(
                           height: 20,
@@ -362,30 +367,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         const SizedBox(
                           height: 15,
                         ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const Text("Already have an account? "),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Login",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Color.fromARGB(255, 255, 166, 82)),
-                              ),
-                            )
-                          ],
-                        )
+                        loginButton,
                       ],
                     ),
                   ),
@@ -393,7 +375,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
             ),
           ),
-          if (_isLoading) // Display loading indicator with a semi-transparent background
+          if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.3),
               child: const Center(
@@ -475,7 +457,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = true; // Show loading indicator
+        _isLoading = true;
       });
 
       try {
@@ -494,9 +476,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Fluttertoast.showToast(msg: e.toString());
       } finally {
         if (mounted) {
-          // Check if the widget is still mounted before calling setState
           setState(() {
-            _isLoading = false; // Hide loading indicator
+            _isLoading = false;
           });
         }
       }
@@ -509,7 +490,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     UserModel userModel = UserModel();
 
-    //writting all the values
     userModel.emailAddress = user!.email;
     userModel.firstName = userNameController.text;
     userModel.lastName = lastNameController.text;
@@ -517,7 +497,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     userModel.password = passwordController.text;
     userModel.profileImage = downloadURL;
 
-    //creating new collection in firestore
     await firebaseFirestore
         .collection("users")
         .doc(user.uid)

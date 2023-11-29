@@ -1,5 +1,3 @@
-
-
 import 'package:apollodemo1/auth/model/user_model.dart';
 import 'package:apollodemo1/auth/registration_screen%20(2).dart';
 import 'package:apollodemo1/auth/user_profile/reset_passsword.dart';
@@ -10,8 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-
 
 import '../components/squaretile.dart';
 import '../services/auth_service.dart';
@@ -27,8 +23,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _isPasswordVisible = false; // Track password visibility
-final GoogleSignIn googleSignIn = GoogleSignIn();
-final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -63,12 +59,13 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
     }
   }
 
-    Future<void> _handleGoogleSignIn() async {
-      setState(() {
-        _isLoading=true;
-      });
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
-      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication =
           await googleSignInAccount!.authentication;
 
@@ -77,37 +74,38 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
         idToken: googleSignInAuthentication.idToken,
       );
 
-      UserCredential userData= await _auth.signInWithCredential(credential);
+      UserCredential userData = await _auth.signInWithCredential(credential);
       print("!!!!!!!!!!!!!!!!");
       postDetailToFirestore(userData);
     } catch (error) {
       setState(() {
-        _isLoading=false;
+        _isLoading = false;
       });
       print(error);
     }
   }
 
   postDetailToFirestore(UserCredential userData) async {
-
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     UserModel userModel = UserModel();
-try{
-    //writting all the values
-    userModel.emailAddress = userData.user!.email;
-    userModel.firstName =userData.user!.displayName;
-    userModel.lastName =userData.user!.displayName;
-    // userModel.confirmPassword = confirmPasswordController.text;
-    // userModel.password = passwordController.text;
-    userModel.profileImage=userData.user!.photoURL;
-  
+    try {
+      //writting all the values
+      userModel.emailAddress = userData.user!.email;
+      userModel.firstName = userData.user!.displayName;
+      userModel.lastName = userData.user!.displayName;
+      // userModel.confirmPassword = confirmPasswordController.text;
+      // userModel.password = passwordController.text;
+      userModel.profileImage = userData.user!.photoURL;
 
-    //creating new collection in firestore
-    await firebaseFirestore
-        .collection("users")
-        .doc(userData.user!.uid)
-        .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Account Created Successfully !");} catch(e){print(e);}
+      //creating new collection in firestore
+      await firebaseFirestore
+          .collection("users")
+          .doc(userData.user!.uid)
+          .set(userModel.toMap());
+      Fluttertoast.showToast(msg: "Account Created Successfully !");
+    } catch (e) {
+      print(e);
+    }
 
     Navigator.pushAndRemoveUntil(
         (context),
@@ -116,7 +114,6 @@ try{
         ),
         (route) => false);
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -136,29 +133,34 @@ try{
       onSaved: (value) {
         emailController.text = value!;
       },
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.mail,color: Colors.white,),
+        prefixIcon: const Icon(
+          Icons.mail,
+          color: Colors.white,
+        ),
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Email",
         hintStyle: TextStyle(color: Colors.white),
         labelStyle: TextStyle(color: Colors.white),
-        border: OutlineInputBorder(      
-      borderRadius: BorderRadius.circular(10),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color.fromARGB(255, 255, 255, 255), // Change border color to blue
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: const Color.fromARGB(255, 255, 238, 0), // Change border color to blue when focused
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Color.fromARGB(
+                255, 255, 255, 255), // Change border color to blue
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: const Color.fromARGB(
+                255, 255, 238, 0), // Change border color to blue when focused
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
 
@@ -184,25 +186,30 @@ try{
           style: TextStyle(color: Colors.white),
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.lock,color: Colors.white,),
+            prefixIcon: const Icon(
+              Icons.lock,
+              color: Colors.white,
+            ),
             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             hintText: "Password",
             hintStyle: TextStyle(color: Colors.white),
-            border: OutlineInputBorder(      
-      borderRadius: BorderRadius.circular(10),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: const Color.fromARGB(255, 255, 255, 255), // Change border color to red
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: const Color.fromARGB(255, 233, 243, 33), // Change border color to blue when focused
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: const Color.fromARGB(
+                    255, 255, 255, 255), // Change border color to red
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: const Color.fromARGB(255, 233, 243,
+                    33), // Change border color to blue when focused
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
         Align(
@@ -247,16 +254,6 @@ try{
             ),
           ),
         ),
-        if (_isLoading)
-          Visibility(
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            visible: _isLoading,
-            child: const CircularProgressIndicator(
-              color: Colors.black,
-            ),
-          ),
       ],
     );
 
@@ -298,7 +295,6 @@ try{
                         "assets/logo.png",
                         width: 250,
                         fit: BoxFit.contain,
-                        
                       ),
                     ),
                     const SizedBox(
@@ -320,14 +316,17 @@ try{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text("Don't have an account? ",style: TextStyle(color: Colors.white ),),
-                        
+                        const Text(
+                          "Don't have an account? ",
+                          style: TextStyle(color: Colors.white),
+                        ),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const RegistrationScreen(),
+                                builder: (context) =>
+                                    const RegistrationScreen(),
                               ),
                             );
                           },
@@ -339,28 +338,26 @@ try{
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                           ),
-
-                          
                         )
-                    
                       ],
                     ),
-                  SizedBox(height: 35.0,),
-                     Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Google sign in btn
-                    SqTile(
-                      onTap: () => _handleGoogleSignIn(),
-                      imagePath: "assets/google.png",
+                    SizedBox(
+                      height: 35.0,
                     ),
-                    SizedBox(width: 25),
-                    // Apple sign in button
-                    SqTile(onTap: () => {}, imagePath: "assets/apple.png"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Google sign in btn
+                        SqTile(
+                          onTap: () => _handleGoogleSignIn(),
+                          imagePath: "assets/google.png",
+                        ),
+                        SizedBox(width: 25),
+                        // Apple sign in button
+                        SqTile(onTap: () => {}, imagePath: "assets/apple.png"),
+                      ],
+                    ),
                   ],
-                ),
-                  ],
-                  
                 ),
               ),
             ),

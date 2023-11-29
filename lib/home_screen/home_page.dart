@@ -237,7 +237,6 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
- 
   AppBar getAppBar() {
     return AppBar(
       backgroundColor: Colors.black,
